@@ -11,7 +11,7 @@ class LiteDonate {
 	const STATUS_SUCCESS = 'success';
 	const STATUS_ERROR   = 'error';
 
-	public static $apiDomain = 'http://api.autodonate.ru/';
+	public static $apiDomain = 'http://api.autodonate.su/';
 
 	private $apiToken,
 					$shopId;

@@ -47,3 +47,19 @@
 	</select> <br>
 	<input name="buy" type="submit" value="Купить / Доплатить">
 </form>
+
+
+<!-- Вывод описания товаров -->
+<div>
+	<h1>Описание товаров</h1>
+	<div>
+		<?php foreach($products as $product): ?>
+			<h4><?=$product['name']?></h4>
+			<p>
+				<?/*  Описание товара   */?>
+				<?=$product['description']?>
+			</p>
+			<hr>
+		<?php endforeach; ?>
+	</div>
+</div>

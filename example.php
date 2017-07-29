@@ -5,14 +5,14 @@
 	use LiteDonate\LiteDonate;
 
 	// Создаем экземпляр класса 
-	$ld = new LiteDonate('API ключ', 0 /*ID магазина*/);
+	$ld = new LiteDonate('BiN14IZFHmaQFH3ZZfz68zh3I5EexalF', 1 /*ID магазина*/);
 
 	// Если это покупка
 	if(isset($_POST['buy'])) {
 		// Выполняем действие
 		$result = $ld->buyProduct();
-		// Если создание платежа прошло успешно, то
 		if($result['status'] == 'success') {
+		// Если создание платежа прошло успешно, то
 			// Перенаправляем пользователя на адрес, который нам вернулся
 			header('Location: ' . $result['response']['redirect']);
 			// Так же там содержится сообщение о необходимости перенаправления
@@ -38,6 +38,8 @@
 <form action="" method="post">
 	<!--                   Обязательно заполнять так                         -->
 	<input type="text" name="LiteDonate[nickname]" placeholder="Логин"> <br>
+	<!--                   Обязательно заполнять так                         -->
+	<input type="text" name="LiteDonate[coupon]" placeholder="Купон, если имеется"> <br>
 	<!--       Обязательно заполнять так                                     -->
 	<select name="LiteDonate[product]" id="">
 		<option value="0" selected disabled>Выберите товар</option>

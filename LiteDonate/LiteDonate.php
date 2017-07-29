@@ -11,7 +11,7 @@ class LiteDonate {
 	const STATUS_SUCCESS = 'success';
 	const STATUS_ERROR   = 'error';
 
-	public static $apiDomain = 'http://api.autodonate.su/';
+	public static $apiDomain = 'http://api.autodonate/';
 
 	private $apiToken,
 					$shopId;
@@ -28,11 +28,13 @@ class LiteDonate {
 	public function buyProduct() {
 		$nickname = $_POST['LiteDonate']['nickname'];
 		$product  = $_POST['LiteDonate']['product'];
+		$coupon  = $_POST['LiteDonate']['coupon'];
 		
 		$request = $this->request('api/buy', [
 			'shopId' => $this->shopId,
 			'nickname' => $nickname,
 			'productId' => $product,
+			'coupon' => $coupon,
 		]);
 
 		return $request;
@@ -41,8 +43,9 @@ class LiteDonate {
 	public function getProducts() {
 		if($this->products === null) {
 			$this->products = $this->request('shop/info/' . $this->shopId, []);
-			if($this->products['status'] === self::STATUS_SUCCESS)
+			if($this->products['status'] === self::STATUS_SUCCESS) {
 				$this->products = $this->products['response']['products'] ? $this->products['response']['products'] : [];
+			}
 		}
 
 		return $this->products;

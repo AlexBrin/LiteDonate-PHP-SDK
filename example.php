@@ -4,6 +4,7 @@ require_once './LiteDonateSDK/LiteDonate.php';
 
 use LiteDonateSDK\LiteDonate;
 
+//                     ключ демо-магазина: http://demo.autodonate.su
 $sdk = new LiteDonate('ym2JMExCaNyKy-Saw3JlXSAKJ6szQQhY');
 
 if(isset($_POST['buy'])) {
@@ -13,8 +14,6 @@ if(isset($_POST['buy'])) {
 }
 
 $shopInfo = $sdk->getInfo();
-
-// die;
 ?><!DOCTYPE html>
 <html lang="en">
 <head>

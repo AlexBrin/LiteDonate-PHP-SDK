@@ -1,6 +1,6 @@
 <?php
 
-require_once '../LiteDonateSDK/LiteDonate.php';
+require_once './LiteDonateSDK/LiteDonate.php';
 
 use LiteDonateSDK\LiteDonate;
 

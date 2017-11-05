@@ -1,67 +1,53 @@
 <?php
 
-	// Подключаем...
-	require_once 'LiteDonate/LiteDonate.php';
-	use LiteDonate\LiteDonate;
+require_once '../LiteDonateSDK/LiteDonate.php';
 
-	// Создаем экземпляр класса 
-	$ld = new LiteDonate('BiN14IZFHmaQFH3ZZfz68zh3I5EexalF', 1 /*ID магазина*/);
+use LiteDonateSDK\LiteDonate;
 
-	// Если это покупка
-	if(isset($_POST['buy'])) {
-		// Выполняем действие
-		$result = $ld->buyProduct();
-		if($result['status'] == 'success') {
-		// Если создание платежа прошло успешно, то
-			// Перенаправляем пользователя на адрес, который нам вернулся
-			header('Location: ' . $result['response']['redirect']);
-			// Так же там содержится сообщение о необходимости перенаправления
-		}
-		// Иначе говорим об ошибке
-		else {
-			echo '<pre>';
-			// Информация о последнем запросе
-			// Дополнительно приложен URL отправляемого запроса
-			print_r($ld->getLastRequest());
-			// Или
-			// просто ответ сервера
-			print_r($result);
-			echo '</pre>';
-			die;
-		}
-	}
+$sdk = new LiteDonate('ym2JMExCaNyKy-Saw3JlXSAKJ6szQQhY');
 
-	// Получаем товары магазина
-	$products = $ld->getProducts();
-?>
+if(isset($_POST['buy'])) {
+	$url = $sdk->createPay();
+	if($url)
+		header("Location: " . $url);
+}
 
-<form action="" method="post">
-	<!--                   Обязательно заполнять так                         -->
-	<input type="text" name="LiteDonate[nickname]" placeholder="Логин"> <br>
-	<!--                   Обязательно заполнять так                         -->
-	<input type="text" name="LiteDonate[coupon]" placeholder="Купон, если имеется"> <br>
-	<!--       Обязательно заполнять так                                     -->
-	<select name="LiteDonate[product]" id="">
-		<option value="0" selected disabled>Выберите товар</option>
-		<?php foreach($products as $product): /* Вывод товаров */ ?>
-			<option value="<?=$product['id']?>"><?=$product['name']?> (<?=$product['price']?>р.)</option>
-		<?php endforeach; ?>
-	</select> <br>
-	<input name="buy" type="submit" value="Купить / Доплатить">
-</form>
+$shopInfo = $sdk->getInfo();
 
-
-<!-- Вывод описания товаров -->
-<div>
-	<h1>Описание товаров</h1>
-	<div>
-		<?php foreach($products as $product): ?>
+// die;
+?><!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><?=$shopInfo['name']?></title>
+</head>
+<body>
+	<h1 align="center">
+		<?=$shopInfo['name']?>
+	</h1>
+	<div class="products">
+		<form action="" method="post" align="center">
+			<input type="text" name="nickname" placeholder="Никнейм" required> <br>
+			<input type="text" name="coupon" placeholder="Купон, если есть"> <br>
+			<select name="productId" required>
+				<option value="0" disabled selected>Выберите товар</option>
+				<?php foreach($sdk->getProducts() as $product): ?>
+					<option value="<?=$product['id']?>">
+						<?=$product['name']?> (<?=$product['price']?>руб.)
+					</option>
+				<?php endforeach; ?>
+			</select> <br>
+			<input type="submit" name="buy" value="Купить">
+		</form>
+	</div>
+	<br>
+	<div class="desc">
+		<h2 align="center">Описание товаров</h1>
+		<?php foreach($sdk->getProducts() as $product): ?>
 			<h4><?=$product['name']?></h4>
-			<p>
-				<?/*  Описание товара   */?>
-				<?=$product['description']?>
-			</p>
+			<p><?=$product['description']?></p>
 			<hr>
 		<?php endforeach; ?>
 	</div>
-</div>
+</body>
+</html>

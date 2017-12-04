@@ -4,8 +4,8 @@ require_once './LiteDonateSDK/LiteDonate.php';
 
 use LiteDonateSDK\LiteDonate;
 
-//                     ключ демо-магазина: http://demo.autodonate.su
-$sdk = new LiteDonate('ym2JMExCaNyKy-Saw3JlXSAKJ6szQQhY');
+// ID демо-магазина: http://demo.autodonate.su
+$sdk = new LiteDonate(1);
 
 if(isset($_POST['buy'])) {
 	$url = $sdk->createPay();

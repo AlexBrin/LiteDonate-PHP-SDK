@@ -17,10 +17,10 @@ class LiteDonate {
 	const API_DOMAIN = 'http://api.autodonate.su/';
 
 	/**
-	 * Ключ доступа магазина
-	 * @var string
+	 * ID магазина
+	 * @var int
 	 */
-	private $token;
+	private $shopId;
 	/**
 	 * Массив с информацией о магазине
 	 * @var array
@@ -58,10 +58,11 @@ class LiteDonate {
 	 * 
 	 * @param string $token
 	 */
-	public function __construct(string $token, bool $post = true) {
-		$this->token = $token;
+	public function __construct(string $shopId, bool $post = true) {
+		$this->shopId = $shopId;
 		self::$post = $post;
 		self::$instance = &$this;
+		$this->createView();
 	}
 
 	/**
@@ -132,7 +133,7 @@ class LiteDonate {
 	}
 
 	private function prepare(string $method, array $data): string {
-		$data['token'] = $this->token;
+		$data['shopId'] = $this->shopId;
 		$data = http_build_query($data);
 
 		return self::API_DOMAIN.$method.'?'.$data;

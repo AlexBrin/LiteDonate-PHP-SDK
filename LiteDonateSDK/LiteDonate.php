@@ -6,8 +6,6 @@
  * @author AlexBrin
  */
 
-declare(strict_types=1);
-
 namespace LiteDonateSDK;
 
 class LiteDonate {
@@ -40,6 +38,12 @@ class LiteDonate {
 	protected $products;
 
 	/**
+	 * Последние покупки
+	 * @var array
+	 */
+	protected $lastPurchases;
+
+	/**
 	 * Способ получения данных из формы
 	 * Если true - данные получаются из $_POST
 	 * Иначе из $_GET
@@ -57,8 +61,9 @@ class LiteDonate {
 	 * constructor 
 	 * 
 	 * @param string $token
+	 * @param bool $post
 	 */
-	public function __construct(string $shopId, bool $post = true) {
+	public function __construct($shopId, $post = true) {
 		$this->shopId = $shopId;
 		self::$post = $post;
 		self::$instance = &$this;
@@ -72,7 +77,7 @@ class LiteDonate {
 	 * @param  array  $data   
 	 * @return array          [Возвращает массив с ответом]
 	 */
-	public function request(string $method, array $data = []): array {
+	public function request($method, $data = []) {
 		$url = $this->prepare($method, $data);
 		$response = file_get_contents($url);
 		$response = json_decode($response, true);
@@ -85,25 +90,40 @@ class LiteDonate {
 		return $response;
 	}
 
-	public function createPay(): string {
+	/**
+	 * Если все прошло хорошо - возвращает url. Иначе null
+	 * 
+	 * @return string|null
+	 */
+	public function createPay() {
 		$data = self::$post ? $_POST : $_GET;
 		$request = $this->request('shop/pay', $data);
 		if($request['status'] === 'success')
 			return $request['response']['redirectUrl'];
 
-		return '';
+		return null;
 	}
 
-	public function getInfo(): array {
+	public function getInfo() {
 		if(!$this->info)
 			$this->info = $this->request('shop')['response'];
 		return $this->info;
 	}
 
-	public function getProducts(): array {
+	public function getProducts() {
 		if(!$this->products)
 			$this->products = $this->request('shop/products')['response'];
 		return $this->products;
+	}
+
+	/**
+	 * Возвращает последние покупки
+	 * @return array 
+	 */
+	public function getLastPurchases($count = 5) {
+		if(!$this->lastPurchases)
+			$this->lastPurchases = $this->request('shop/last', ['count' = $count])['response'];
+		return $this->lastPurchases;
 	}
 
 	/**
@@ -111,35 +131,31 @@ class LiteDonate {
 	 * 
 	 * @return array
 	 */
-	public function getLastRequest(): array {
+	public function getLastRequest() {
 		return $this->lastRequest;
-	}
-
-	/**
-	 * Возвращает токен магазина
-	 * 
-	 * @return string 
-	 */
-	public function getToken(): string {
-		return $this->token;
 	}
 
 	/**
 	 * Создает новый просмотр на платформе
 	 * Используется для статистики
 	 */
-	private function createView(): void {
+	private function createView() {
 		$this->request('shop/view');
 	}
 
-	private function prepare(string $method, array $data): string {
+	/**
+	 * @param  string $method
+	 * @param  array $data
+	 * @return string
+	 */
+	private function prepare($method, $data) {
 		$data['shopId'] = $this->shopId;
 		$data = http_build_query($data);
 
 		return self::API_DOMAIN.$method.'?'.$data;
 	}
 
-	public static function getInstance(): LiteDonate {
+	public static function getInstance() {
 		return self::$instance;
 	}
 

@@ -5,7 +5,7 @@ require_once './LiteDonateSDK/LiteDonate.php';
 use LiteDonateSDK\LiteDonate;
 
 // ID демо-магазина: http://demo.autodonate.su
-$sdk = new LiteDonate(1);
+$sdk = new LiteDonate(13);
 
 if(isset($_POST['buy'])) {
 	$url = $sdk->createPay();
@@ -45,6 +45,16 @@ $shopInfo = $sdk->getInfo();
 		<?php foreach($sdk->getProducts() as $product): ?>
 			<h4><?=$product['name']?></h4>
 			<p><?=$product['description']?></p>
+			<hr>
+		<?php endforeach; ?>
+	</div>
+	<br>
+	<div class="last">
+		<h2 align="center">Последние покупки</h2>
+		<?php foreach($sdk->getLastPurchases() as $purchase): ?>
+			<p>Игрок <b><?=$purchase['nickname']?></b></p>
+			<p>купил <?=is_array($purchase['product']) ? $purchase['product']['name'] : $purchase['product']?></p>
+			<p>за <?=($purchase['price'] + $purchase['commission'])?> руб.</p>
 			<hr>
 		<?php endforeach; ?>
 	</div>

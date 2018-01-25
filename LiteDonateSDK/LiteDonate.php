@@ -122,7 +122,7 @@ class LiteDonate {
 	 */
 	public function getLastPurchases($count = 5) {
 		if(!$this->lastPurchases)
-			$this->lastPurchases = $this->request('shop/last', ['count' = $count])['response'];
+			$this->lastPurchases = $this->request('shop/last', ['count' => $count])['response']['last'];
 		return $this->lastPurchases;
 	}
 

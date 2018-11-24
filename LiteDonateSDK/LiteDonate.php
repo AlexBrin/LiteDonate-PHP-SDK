@@ -12,7 +12,7 @@ class LiteDonate {
 	/**
 	 * @constant(API_DOMAIN) [Адрес API-сервера]
 	 */
-	const API_DOMAIN = 'http://api.autodonate.su/';
+	const API_DOMAIN = 'https://api.autodonate.su/';
 
 	/**
 	 * ID магазина
@@ -79,8 +79,13 @@ class LiteDonate {
 	 */
 	public function request($method, $data = []) {
 		$url = $this->prepare($method, $data);
-		$response = file_get_contents($url);
-		$response = json_decode($response, true);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		$response = json_decode(curl_exec($ch), true);
+		curl_close($ch);
 
 		$this->lastRequest = [
 			'url' => $url,
